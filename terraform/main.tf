@@ -20,7 +20,7 @@ provider "aws" {
 data "aws_caller_identity" "me" {}
 // terraform va créer le backet et lake c'est le nom local que Terraform donne à cette ressource.
 resource "aws_s3_bucket" "lake" {
-  bucket        =  "${var.project}-lake-${data.aws_caller_identity.me.account_id}"
+  bucket        = "${var.project}-lake-${data.aws_caller_identity.me.account_id}"
   force_destroy = true
 }
 // on rend backet privé
@@ -74,6 +74,6 @@ resource "aws_athena_workgroup" "wg" {
 // on veut que lorsqu'on écrit terraform output -raw bucket on obtient nom du bucket
 
 output "bucket" {
- value =    aws_s3_bucket.lake.bucket
+  value = aws_s3_bucket.lake.bucket
 }
 
