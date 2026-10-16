@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ingestion.to_silver import clean_trips, KEEP
+from ingestion.to_silver import KEEP, clean_trips
 
 
 def make_raw():
