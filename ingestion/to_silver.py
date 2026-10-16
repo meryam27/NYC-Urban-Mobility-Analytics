@@ -43,20 +43,23 @@ def _write(df,key):
   # charger d'apres buffer
   s3.put_object(Bucket=BUCKET, Key=key, Body=buf.getvalue())
   
-def trips_to_silver(year,month):
-  df=pd.read_parquet(io.BytesIO(_read(
-    f"raw/trips/year={year}/month={month:02d}/yellow_{year}-{month:02d}.parquet"
-  )))
-  df = df.rename(columns=RENAME)[KEEP]
-  for c in ["vendor_id" , "passenger_count" , "pickup_location_id" , "dropoff_location_id" ,"payment_type" ]:
-    df[c] = pd.to_numeric(df[c] , errors="coerce").fillna(0).astype("int32")
-  for c in ["trip_distance" , "fare_amount" , "tip_amount","tolls_amount" ,"total_amount"]:
-    df[c] = pd.to_numeric(df[c] , errors="coerce").fillna(0).astype("float64")
-  df["pickup_at"] = pd.to_datetime(df["pickup_at"])
-  df["dropoff_at"] = pd.to_datetime(df["dropoff_at"])
-  #Avec le filtre, chaque course appartient à exactement un mois.
-  df = df[(df.pickup_at.dt.year == year) & (df.pickup_at.dt.month == month)]
-  _write(df , f"clean/trips/year={year}/month={month:02d}/trips.parquet")
+def clean_trips(df, year, month):
+   
+    df = df.rename(columns=RENAME)[KEEP]
+    for c in ["vendor_id", "passenger_count", "pickup_location_id", "dropoff_location_id", "payment_type"]:
+        df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0).astype("int32")
+    for c in ["trip_distance", "fare_amount", "tip_amount", "tolls_amount", "total_amount"]:
+        df[c] = pd.to_numeric(df[c], errors="coerce").astype("float64")
+    df["pickup_at"] = pd.to_datetime(df["pickup_at"])
+    df["dropoff_at"] = pd.to_datetime(df["dropoff_at"])
+    return df[(df.pickup_at.dt.year == year) & (df.pickup_at.dt.month == month)]
+
+def trips_to_silver(year, month):
+    df = pd.read_parquet(io.BytesIO(_read(
+        f"raw/trips/year={year}/month={month:02d}/yellow_{year}-{month:02d}.parquet")))
+    _write(clean_trips(df, year, month), f"clean/trips/year={year}/month={month:02d}/trips.parquet")
+    
+
   
 def weather_to_silver(year,month):
   h = json.loads(_read(f"raw/weather/year={year}/month={month:02d}/weather_{year}-{month:02d}.json"))

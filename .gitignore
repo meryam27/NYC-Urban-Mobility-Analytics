@@ -2,6 +2,10 @@
 
 .terraform/
 *.tfstate
-
+.venv/
+dbt_project/target/
+dbt_project/dbt_packages/
+dbt_project/logs/
+logs/
 
 dbt_project\packages.yml
