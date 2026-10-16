@@ -1,0 +1,11 @@
+name: "nyc_mobility"
+version: "1.0.0"
+config-version: 2
+profile: "nyc"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "/tmp/dbt_target"
+vars:
+  start_date: "2025-01-01"
+  end_date: "2025-01-31"

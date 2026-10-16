@@ -1,0 +1,13 @@
+# connexion à Athena
+nyc:
+  target: dev
+  outputs:
+    dev:
+      type: athena
+      region_name: eu-west-1
+      s3_staging_dir: s3://nyc-mobility-lake-021508568633/athena-results/
+      s3_data_dir: s3://nyc-mobility-lake-021508568633/dbt/
+      database: awsdatacatalog
+      schema: staging
+      work_group: nyc-mobility
+      threads: 4

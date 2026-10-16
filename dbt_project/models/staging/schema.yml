@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: stg_weather
+    columns:
+      - name: observed_at
+        tests:
+          - unique:
+              config:
+                severity: warn
